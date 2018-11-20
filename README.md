@@ -45,29 +45,52 @@ Check the project page for roadmap.
 -----------
 This software uses the following (awesome) projects:
 
-Dear ImGui - Omar Cornut https://github.com/ocornut/imgui
+Dear ImGui - Omar Cornut
+a bloat-free graphical user interface library for C++.
+https://github.com/ocornut/imgui
 
-ImGuiColorTextEdit - Balazs Jako https://github.com/BalazsJako/ImGuiColorTextEdit
+ImGuiColorTextEdit - Balazs Jako
+Syntax highlighting text editor for ImGui.
+https://github.com/BalazsJako/ImGuiColorTextEdit
 
-stb_image, stb_image_write - Sean T. Barett https://github.com/nothings/stb
+stb_image, stb_image_write - Sean T. Barett 
+single-file public domain (or MIT licensed) libraries for C/C++.
+https://github.com/nothings/stb
 
-imguiDock - Bentley Blanks https://github.com/BentleyBlanks/imguiDock
+imguiDock - Bentley Blanks 
+An addon of imgui for support dock in the window.
+https://github.com/BentleyBlanks/imgiuiDock
 
-EnkiTS - Doug Binks https://github.com/dougbinks/enkiTS
+EnkiTS - Doug Binks 
+A permissively licensed C and C++ Task Scheduler for creating parallel programs.
+https://github.com/dougbinks/enkiTS
 
-Tiny C Compiler - Fabrice Bellard https://bellard.org/tcc/
+Tiny C Compiler - Fabrice Bellard 
+an x86, X86-64 and ARM processor C compiler. It is designed to work for slow computers with little disk space.
+https://bellard.org/tcc/
 
-SDL2 - https://www.libsdl.org/
+SDL2
+a cross-platform development library designed to provide low level access to audio, keyboard, mouse, joystick, and graphics hardware via OpenGL and Direct3D.
+https://www.libsdl.org/
 
-NativeFileDialog - Michael Labbe https://github.com/mlabbe/nativefiledialog
+NativeFileDialog - Michael Labbe 
+A tiny, neat C library that portably invokes native file open, folder select and save dialogs.
+https://github.com/mlabbe/nativefiledialog
 
-gl3w - Slavomir Kaslev https://github.com/skaslev/gl3w
+gl3w - Slavomir Kaslev 
+gl3w is the easiest way to get your hands on the functionality offered by the OpenGL core profile specification.
+https://github.com/skaslev/gl3w
 
-TinyDir - https://github.com/cxong/tinydir
+TinyDir
+Lightweight, portable and easy to integrate C directory and file reader. TinyDir wraps dirent for POSIX and FindFirstFile for Windows.
+https://github.com/cxong/tinydir
 
-cmft - cubemap filtering tool - Dario Manesku https://github.com/dariomanesku/cmft
+cmft - cubemap filtering tool - Dario Manesku 
+Cross-platform open-source command-line cubemap filtering tool.
+https://github.com/dariomanesku/cmft
 
-dear imgui color scheme - codz01 https://github.com/ocornut/imgui/issues/1902#issuecomment-429445321
+dear imgui color scheme - codz01
+https://github.com/ocornut/imgui/issues/1902#issuecomment-429445321
 
 
 -----------
