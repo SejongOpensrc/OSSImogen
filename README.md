@@ -68,3 +68,8 @@ TinyDir - https://github.com/cxong/tinydir
 cmft - cubemap filtering tool - Dario Manesku https://github.com/dariomanesku/cmft
 
 dear imgui color scheme - codz01 https://github.com/ocornut/imgui/issues/1902#issuecomment-429445321
+
+
+-----------
+
+How to use Imogen : https://www.youtube.com/watch?v=84QgFdZb7eM
