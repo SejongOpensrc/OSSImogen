@@ -38,7 +38,7 @@ Currently implemented nodes
 - Ramp
 - Tile
 - Polar coordinates
-- ...
+- ....
 
 Check the project page for roadmap.
 
