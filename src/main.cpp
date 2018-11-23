@@ -1,4 +1,4 @@
-// https://github.com/CedricGuillemet/Imogen
+﻿// https://github.com/CedricGuillemet/Imogen
 //
 // The MIT License(MIT)
 // 
@@ -22,6 +22,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
+
+/* 
+
+프로그램이 시작되는 부분에 들어감
+프로그램의 제목, 저자, 목적 등을 밝히는 부분임
+프로그램 전체를 파악할 수 있음
+기본 형태(구성)
+파일명, 출저, 작성, 목적
+사용방식, 사용파일
+제한사항, 오류처리
+이력사항
+ 해당 내용이 없으면 빈 줄로 남겨두거나 ‘해당 사항 없음’이라고 기록해 두면 됨
+
+*/
 
 #include "imgui.h"
 #include "imgui_internal.h"
