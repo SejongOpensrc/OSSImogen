@@ -43,6 +43,7 @@ extern Evaluation gEvaluation;
 
 extern enki::TaskScheduler g_TS;
 
+//Log 정보를 저장하기 위한 Structure
 struct ImguiAppLog
 {
 	ImguiAppLog()
@@ -770,22 +771,23 @@ void LibraryEdit(Library& library, TileNodeEditGraphDelegate &nodeGraphDelegate,
 	ImGui::EndChild();
 }
 
+//imgui에서 프레임을 형성한다음 시각하기 위해 호출
 void Imogen::Show(Library& library, TileNodeEditGraphDelegate &nodeGraphDelegate, Evaluation& evaluation)
 {
-	ImGuiIO& io = ImGui::GetIO();
+	ImGuiIO& io = ImGui::GetIO();								//Imgui의 IO Structure에 접근한다. (마우스나 키보드의 입력,설정,시간 등의 정보를 저장)
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
 	ImGui::SetNextWindowSize(io.DisplaySize);
-	if (ImGui::Begin("Imogen", 0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize))
+	if (ImGui::Begin("Imogen", 0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize)									//Imogen start
 	{
 		static ImGuiDockNodeFlags opt_flags = ImGuiDockNodeFlags_None;
 		ImGuiID dockspace_id = ImGui::GetID("MyDockspace");
-		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), opt_flags);
+		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), opt_flags);			//DockSpace 활성화
 
-		if (ImGui::Begin("Nodes"))
+		if (ImGui::Begin("Nodes"))							//"Nodes"창 시작
 		{
-			if (selectedMaterial != -1)
+			if (selectedMaterial != -1)						//Library에서 Material이 선택되었는지 유무(선택되지 않을경우 초기값 -1)
 			{
-				Material& material = library.mMaterials[selectedMaterial];
+				Material& material = library.mMaterials[selectedMaterial];	//Library에서 선택된 Material을 불러온다.
 				ImGui::PushItemWidth(150);
 				ImGui::InputText("Name", &material.mName);
 				ImGui::SameLine();
@@ -796,12 +798,12 @@ void Imogen::Show(Library& library, TileNodeEditGraphDelegate &nodeGraphDelegate
 				static int previewSize = 0;
 				//ImGui::Combo("Preview size", &previewSize, "  128\0  256\0  512\0 1024\0 2048\0 4096\0");
 				//ImGui::SameLine();
-				if (ImGui::Button("Do exports"))
+				if (ImGui::Button("Do exports"))				//외부 저장 버튼 클릭
 				{
-					nodeGraphDelegate.DoForce();
+					nodeGraphDelegate.DoForce();				
 				}
 				ImGui::SameLine();
-				if (ImGui::Button("Save Graph"))
+				if (ImGui::Button("Save Graph"))				//그래프 저장 버튼 클릭
 				{
 					nfdchar_t *outPath = NULL;
 					nfdresult_t result = NFD_SaveDialog("imogen", NULL, &outPath);
@@ -817,7 +819,7 @@ void Imogen::Show(Library& library, TileNodeEditGraphDelegate &nodeGraphDelegate
 					}
 				}
 				ImGui::SameLine();
-				if (ImGui::Button("Delete Graph"))
+				if (ImGui::Button("Delete Graph"))				//그래프 삭제 버튼 클릭
 				{
 					library.mMaterials.erase(library.mMaterials.begin() + selectedMaterial);
 					selectedMaterial = int(library.mMaterials.size()) - 1;
@@ -827,28 +829,28 @@ void Imogen::Show(Library& library, TileNodeEditGraphDelegate &nodeGraphDelegate
 			}
 			NodeGraph(&nodeGraphDelegate, selectedMaterial != -1);	
 		}
-		ImGui::End();
+		ImGui::End();									
 
-		if (ImGui::Begin("Shaders"))
+		if (ImGui::Begin("Shaders"))							//"Shaders" Start
 		{
 			HandleEditor(editor, nodeGraphDelegate, evaluation);
 		}
 		ImGui::End();
 
-		if (ImGui::Begin("Library"))
+		if (ImGui::Begin("Library"))							//"Library" Start
 		{
 			LibraryEdit(library, nodeGraphDelegate, evaluation);
 		}
 		ImGui::End();
 
 		ImGui::SetWindowSize(ImVec2(300, 300));
-		if (ImGui::Begin("Parameters"))
+		if (ImGui::Begin("Parameters"))							//"Parameters" Start
 		{
 			NodeEdit(nodeGraphDelegate, evaluation);
 		}
 		ImGui::End();
 
-		if (ImGui::Begin("Logs"))
+		if (ImGui::Begin("Logs"))							//"Logs" Start
 		{
 			ImguiAppLog::Log->DrawEmbedded();
 		}
@@ -922,6 +924,7 @@ Imogen::~Imogen()
 
 }
 
+//main에서 Loop에 들어가기 전에 설정
 void Imogen::Init()
 {
 	SetStyle();
