@@ -23,6 +23,9 @@
 // SOFTWARE.
 //
 
+// 진짜 간략하게 여기는 노드를 생성하고, 노드 자체를 관리하는 부분
+// NodeGraphAddNode 가 action의 핵심, 함수이름이 곧 action의 대표임을 알 수 있다.
+
 #include "imgui.h"
 #include "imgui_internal.h"
 #include <math.h>
@@ -268,6 +271,7 @@ void NodeGraphUpdateEvaluationOrder(NodeGraphDelegate *delegate)
 	delegate->UpdateEvaluationList(nodeOrderList);
 }
 
+// action의 핵심 부분 -> Node를 만들어서 추가
 void NodeGraphAddNode(NodeGraphDelegate *delegate, int type, void *parameters, int posx, int posy)
 {
 	// 특정 type인, 포지션에 Node를 추가합니다. (NodeGraphDelegate)
@@ -275,6 +279,7 @@ void NodeGraphAddNode(NodeGraphDelegate *delegate, int type, void *parameters, i
 	nodes.push_back(Node(type, ImVec2(float(posx), float(posy))));
 	delegate->AddNode(type);
 	delegate->SetParamBlock(index, (unsigned char*)parameters);
+	// NodeGraphDelegate 형식의 delegate에 AddNode
 }
 
 void NodeGraphAddLink(NodeGraphDelegate *delegate, int InputIdx, int InputSlot, int OutputIdx, int OutputSlot)
@@ -297,6 +302,7 @@ ImVec2 NodeGraphGetNodePos(size_t index)
 
 static ImVec2 scrolling = ImVec2(0.0f, 0.0f);
 
+// Update됨을 감지 -> 그리고 Scrollig을 해준다.
 void NodeGraphUpdateScrolling()
 {
 	if (nodes.empty())
