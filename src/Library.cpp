@@ -1,4 +1,4 @@
-// https://github.com/CedricGuillemet/Imogen
+ï»¿// https://github.com/CedricGuillemet/Imogen
 //
 // The MIT License(MIT)
 // 
@@ -29,138 +29,138 @@
 #include "Library.h"
 
   
-// Áß¿ä Âü°í »çÇ× : Ser - µ¥ÀÌÅÍ¸¦ ÆÄÀÏ¿¡ ¾²°Å³ª ÀĞ´Â ÀÛ¾÷ ¼öÇà
+// ì¤‘ìš” ì°¸ê³  ì‚¬í•­ : Ser - ë°ì´í„°ë¥¼ íŒŒì¼ì— ì“°ê±°ë‚˜ ì½ëŠ” ì‘ì—… ìˆ˜í–‰
 
 
-enum : uint32_t  // ¿­°ÅÇü Á¤ÀÇ
+enum : uint32_t  // ì—´ê±°í˜• ì •ì˜
 {
-	v_initial,          // ¹öÀü
-	v_materialComment,  // material¿¡ ´ëÇÑ ¼³¸í
-	v_lastVersion       // ¸¶Áö¸· ¹öÀü
+	v_initial,          // ë²„ì „
+	v_materialComment,  // materialì— ëŒ€í•œ ì„¤ëª…
+	v_lastVersion       // ë§ˆì§€ë§‰ ë²„ì „
 };
-#define ADD(_fieldAdded, _fieldName) if (dataVersion >= _fieldAdded){ Ser(_fieldName); }         // Á¤»óÀûÀÎ ¹öÀüÀÎ °æ¿ì, ÇØ´ç field¿¡ ´ëÇØ SerÀÛ¾÷ ¼öÇà 
+#define ADD(_fieldAdded, _fieldName) if (dataVersion >= _fieldAdded){ Ser(_fieldName); }         // ì •ìƒì ì¸ ë²„ì „ì¸ ê²½ìš°, í•´ë‹¹ fieldì— ëŒ€í•´ Serì‘ì—… ìˆ˜í–‰ 
 #define ADD_LOCAL(_localAdded, _type, _localName, _defaultValue) \                                   
-	_type _localName = (_defaultValue); \                                                        // localNameÀ» ÃÊ±âÈ­ÇÏ°í
-	if (dataVersion >= (_localAdded)) { Ser(_localName)); }                                      // Á¤»óÀûÀÎ ¹öÀüÀÎ °æ¿ì, ÇØ´ç local¿¡ ´ëÇØ SerÀÛ¾÷ ¼öÇà
+	_type _localName = (_defaultValue); \                                                        // localNameì„ ì´ˆê¸°í™”í•˜ê³ 
+	if (dataVersion >= (_localAdded)) { Ser(_localName)); }                                      // ì •ìƒì ì¸ ë²„ì „ì¸ ê²½ìš°, í•´ë‹¹ localì— ëŒ€í•´ Serì‘ì—… ìˆ˜í–‰
 #define REM(_fieldAdded, _fieldRemoved, _type, _fieldName, _defaultValue) \
-	_type _fieldName = (_defaultValue); \                                                        // localNameÀ» ÃÊ±âÈ­ÇÏ°í
-	if (dataVersion >= (_fieldAdded) && dataVersion < (_fieldRemoved)) { Ser(_fieldName); }      // Á¤»óÀûÀÎ ¹öÀüÀÎ °æ¿ì, ÇØ´ç field¿¡ ´ëÇØ SerÀÛ¾÷ ¼öÇà
-#define VERSION_IN_RANGE(_from, _to) \                                                           // ¹öÀüÀÌ from°ú to »çÀÌ¿¡ ÀÖ´ÂÁö¿¡ ´ëÇÏ¿© ¹İÈ¯ 
+	_type _fieldName = (_defaultValue); \                                                        // localNameì„ ì´ˆê¸°í™”í•˜ê³ 
+	if (dataVersion >= (_fieldAdded) && dataVersion < (_fieldRemoved)) { Ser(_fieldName); }      // ì •ìƒì ì¸ ë²„ì „ì¸ ê²½ìš°, í•´ë‹¹ fieldì— ëŒ€í•´ Serì‘ì—… ìˆ˜í–‰
+#define VERSION_IN_RANGE(_from, _to) \                                                           // ë²„ì „ì´ fromê³¼ to ì‚¬ì´ì— ìˆëŠ”ì§€ì— ëŒ€í•˜ì—¬ ë°˜í™˜ 
 	(dataVersion >= (_from) && dataVersion < (_to))
 
-template<bool doWrite> struct Serialize   // Å¬·¡½ºÃ³·³ ±¸ÇöµÈ ±¸Á¶Ã¼ (C++ ¹æ½Ä)
+template<bool doWrite> struct Serialize   // í´ë˜ìŠ¤ì²˜ëŸ¼ êµ¬í˜„ëœ êµ¬ì¡°ì²´ (C++ ë°©ì‹)
 {
-	Serialize(const char *szFilename)  // »ı¼ºÀÚ
+	Serialize(const char *szFilename)  // ìƒì„±ì
 	{
-		fp = fopen(szFilename, doWrite ? "wb" : "rb");  // ¾²±â¸ğµå or ÀĞ±â¸ğµå·Î ÆÄÀÏÀ» open
+		fp = fopen(szFilename, doWrite ? "wb" : "rb");  // ì“°ê¸°ëª¨ë“œ or ì½ê¸°ëª¨ë“œë¡œ íŒŒì¼ì„ open
 	}
-	~Serialize()                      // ¼Ò¸êÀÚ
+	~Serialize()                      // ì†Œë©¸ì
 	{
 		if (fp)
-			fclose(fp);                                 // ÆÄÀÏ close
+			fclose(fp);                                 // íŒŒì¼ close
 	}
-	template<typename T> void Ser(T& data)  // Á¦³×¸¯ µ¥ÀÌÅÍ											
+	template<typename T> void Ser(T& data)  // ì œë„¤ë¦­ ë°ì´í„°											
 	{
-		if (doWrite)  // ¾²±â¸ğµå
-			fwrite(&data, sizeof(T), 1, fp);  // data¸¦ fp¿¡ ¾¸
-		else          // ÀĞ±â¸ğµå
-			fread(&data, sizeof(T), 1, fp);   // fp¿¡¼­ data·Î ÀĞ¾îµéÀÓ
+		if (doWrite)  // ì“°ê¸°ëª¨ë“œ
+			fwrite(&data, sizeof(T), 1, fp);  // dataë¥¼ fpì— ì”€
+		else          // ì½ê¸°ëª¨ë“œ
+			fread(&data, sizeof(T), 1, fp);   // fpì—ì„œ dataë¡œ ì½ì–´ë“¤ì„
 	}
-	void Ser(std::string& data)  // ½ºÆ®¸µ µ¥ÀÌÅÍ
+	void Ser(std::string& data)  // ìŠ¤íŠ¸ë§ ë°ì´í„°
 	{
 		if (doWrite)
 		{
 			uint32_t len = uint32_t(data.length() + 1);
-			fwrite(&len, sizeof(uint32_t), 1, fp);   // µ¥ÀÌÅÍÀÇ ±æÀÌ(len)¸¦ fp¿¡ ¾²°í
-			fwrite(data.c_str(), len, 1, fp);        // dataÀÇ stringµµ fp¿¡ ¾¸
+			fwrite(&len, sizeof(uint32_t), 1, fp);   // ë°ì´í„°ì˜ ê¸¸ì´(len)ë¥¼ fpì— ì“°ê³ 
+			fwrite(data.c_str(), len, 1, fp);        // dataì˜ stringë„ fpì— ì”€
 		}
 		else
 		{
 			uint32_t len;
-			fread(&len, sizeof(uint32_t), 1, fp);   // µ¥ÀÌÅÍÀÇ ±æÀÌ¸¦ ÀĞ¾îµéÀÌ°í 
-			data.resize(len);                       // ±æÀÌ¿¡ ¸Â°Ô µ¥ÀÌÅÍ¸¦ ¸®»çÀÌÂ¡ÇÏ¿©
-			fread(&data[0], len, 1, fp);            // µ¥ÀÌÅÍ¿¡ ½ºÆ®¸µÀ» ÀĞ¾îµéÀÓ
+			fread(&len, sizeof(uint32_t), 1, fp);   // ë°ì´í„°ì˜ ê¸¸ì´ë¥¼ ì½ì–´ë“¤ì´ê³  
+			data.resize(len);                       // ê¸¸ì´ì— ë§ê²Œ ë°ì´í„°ë¥¼ ë¦¬ì‚¬ì´ì§•í•˜ì—¬
+			fread(&data[0], len, 1, fp);            // ë°ì´í„°ì— ìŠ¤íŠ¸ë§ì„ ì½ì–´ë“¤ì„
 		}
 	}
-	template<typename T> void Ser(std::vector<T>& data)  // Á¦³×¸¯ º¤ÅÍ µ¥ÀÌÅÍ
+	template<typename T> void Ser(std::vector<T>& data)  // ì œë„¤ë¦­ ë²¡í„° ë°ì´í„°
 	{
-		uint32_t count = uint32_t(data.size());  // µ¥ÀÌÅÍÀÇ ±æÀÌ ÀĞ¾îµéÀÌ°í
-		Ser(count);                              // ±æÀÌ(count)¿¡ ´ëÇÏ¿© Ser ÀÛ¾÷À» ¼öÇà ÈÄ
-		data.resize(count);                      // ±æÀÌ¿¡ ¸Â°Ô µ¥ÀÌÅÍ¸¦ ¸®»çÀÌÂ¡ÇÏ¿©
-		for (auto& item : data)                  // data ÄÃ·º¼Ç¿¡ ´ëÇØ 
-			Ser(&item);                          // ¸ğµÎ Ser ÀÛ¾÷À» ÇØÁÜ
+		uint32_t count = uint32_t(data.size());  // ë°ì´í„°ì˜ ê¸¸ì´ ì½ì–´ë“¤ì´ê³ 
+		Ser(count);                              // ê¸¸ì´(count)ì— ëŒ€í•˜ì—¬ Ser ì‘ì—…ì„ ìˆ˜í–‰ í›„
+		data.resize(count);                      // ê¸¸ì´ì— ë§ê²Œ ë°ì´í„°ë¥¼ ë¦¬ì‚¬ì´ì§•í•˜ì—¬
+		for (auto& item : data)                  // data ì»¬ë ‰ì…˜ì— ëŒ€í•´ 
+			Ser(&item);                          // ëª¨ë‘ Ser ì‘ì—…ì„ í•´ì¤Œ
 	}
-	void Ser(std::vector<uint8_t>& data)  // intÇü º¤ÅÍ µ¥ÀÌÅÍ (¹İÈ¯ ¾øÀ½)
+	void Ser(std::vector<uint8_t>& data)  // intí˜• ë²¡í„° ë°ì´í„° (ë°˜í™˜ ì—†ìŒ)
 	{
 		uint32_t count = uint32_t(data.size());
 		Ser(count);
-		if (!count)                                 // count = 0 ÀÌ¸é ³¡
+		if (!count)                                 // count = 0 ì´ë©´ ë
 			return;
 		if (doWrite)
 		{
-			fwrite(data.data(), count, 1, fp);      // ±æÀÌ¸¸Å­ data¸¦ fp¿¡ ¾¸
+			fwrite(data.data(), count, 1, fp);      // ê¸¸ì´ë§Œí¼ dataë¥¼ fpì— ì”€
 		}
 		else
 		{
 			data.resize(count);                     
-			fread(&data[0], count, 1, fp);          // ±æÀÌ¸¸Å­ fp¿¡¼­ data·Î ÀĞ¾îµéÀÓ
+			fread(&data[0], count, 1, fp);          // ê¸¸ì´ë§Œí¼ fpì—ì„œ dataë¡œ ì½ì–´ë“¤ì„
 		}
 	}
 
-	void Ser(InputSampler *inputSampler)               // inputSampler(»ùÇÃ¸µ ÀÛ¾÷ÀÌ ¼öÇàµÇ´Â ÅØ½ºÃÄ)ÀÇ °¢ ¿ä¼Ò¿¡ ´ëÇØ SerÀÛ¾÷ ¼öÇà
+	void Ser(InputSampler *inputSampler)               // inputSampler(ìƒ˜í”Œë§ ì‘ì—…ì´ ìˆ˜í–‰ë˜ëŠ” í…ìŠ¤ì³)ì˜ ê° ìš”ì†Œì— ëŒ€í•´ Serì‘ì—… ìˆ˜í–‰
 	{
-		ADD(v_initial, inputSampler->mWrapU);         // UÃà¿¡ ´ëÇÑ ·¡ÇÎ
-		ADD(v_initial, inputSampler->mWrapV);         // VÃà¿¡ ´ëÇÑ ·¡ÇÎ
-		ADD(v_initial, inputSampler->mFilterMin);     // Ãà¼Ò ÇÊÅÍ
-		ADD(v_initial, inputSampler->mFilterMag);     // È®´ë ÇÊÅÍ
+		ADD(v_initial, inputSampler->mWrapU);         // Uì¶•ì— ëŒ€í•œ ë˜í•‘
+		ADD(v_initial, inputSampler->mWrapV);         // Vì¶•ì— ëŒ€í•œ ë˜í•‘
+		ADD(v_initial, inputSampler->mFilterMin);     // ì¶•ì†Œ í•„í„°
+		ADD(v_initial, inputSampler->mFilterMag);     // í™•ëŒ€ í•„í„°
 	}
-	void Ser(MaterialNode *materialNode)               // materialNode(ÅØ½ºÃÄ¸¦ Æ÷ÇÔÇÏ°í ÀÖ´Â ³ëµå)ÀÇ °¢ ¿ä¼Ò¿¡ ´ëÇØ SerÀÛ¾÷ ¼öÇà
+	void Ser(MaterialNode *materialNode)               // materialNode(í…ìŠ¤ì³ë¥¼ í¬í•¨í•˜ê³  ìˆëŠ” ë…¸ë“œ)ì˜ ê° ìš”ì†Œì— ëŒ€í•´ Serì‘ì—… ìˆ˜í–‰
 	{
-		ADD(v_initial, materialNode->mType);            // ³ëµåÅ¸ÀÔ
-		ADD(v_initial, materialNode->mPosX);            // ³ëµåÀÇ x À§Ä¡
-		ADD(v_initial, materialNode->mPosY);            // ³ëµåÀÇ y À§Ä¡
-		ADD(v_initial, materialNode->mInputSamplers);   // ³ëµå°¡ Æ÷ÇÔÇÏ°í ÀÖ´Â inputSampler
-		ADD(v_initial, materialNode->mParameters);      // ÆĞ·¯¹ÌÅÍ °ªµé
+		ADD(v_initial, materialNode->mType);            // ë…¸ë“œíƒ€ì…
+		ADD(v_initial, materialNode->mPosX);            // ë…¸ë“œì˜ x ìœ„ì¹˜
+		ADD(v_initial, materialNode->mPosY);            // ë…¸ë“œì˜ y ìœ„ì¹˜
+		ADD(v_initial, materialNode->mInputSamplers);   // ë…¸ë“œê°€ í¬í•¨í•˜ê³  ìˆëŠ” inputSampler
+		ADD(v_initial, materialNode->mParameters);      // íŒ¨ëŸ¬ë¯¸í„° ê°’ë“¤
 	}
-	void Ser(MaterialConnection *materialConnection)   // materialConnection(³ëµåÀÇ ¿¬°áµé)ÀÇ °¢ ¿ä¼Ò¿¡ ´ëÇØ SerÀÛ¾÷ ¼öÇà
+	void Ser(MaterialConnection *materialConnection)   // materialConnection(ë…¸ë“œì˜ ì—°ê²°ë“¤)ì˜ ê° ìš”ì†Œì— ëŒ€í•´ Serì‘ì—… ìˆ˜í–‰
 	{
-		ADD(v_initial, materialConnection->mInputNode);   // ³ª¿¡°Ô ¿¬°áµÇ´Â ³ëµå
-		ADD(v_initial, materialConnection->mOutputNode);  // ³ª¿¡°Ô¼­ ¿¬°áµÈ ³ëµå
-		ADD(v_initial, materialConnection->mInputSlot);   // ¿¬°áµÉ ¼ö ÀÖ´Â ³ëµåµéÀÇ ½½·Ô
-		ADD(v_initial, materialConnection->mOutputSlot);  // ¿¬°áÇÒ ¼ö ÀÖ´Â ³ëµåµéÀÇ ½½·Ô
+		ADD(v_initial, materialConnection->mInputNode);   // ë‚˜ì—ê²Œ ì—°ê²°ë˜ëŠ” ë…¸ë“œ
+		ADD(v_initial, materialConnection->mOutputNode);  // ë‚˜ì—ê²Œì„œ ì—°ê²°ëœ ë…¸ë“œ
+		ADD(v_initial, materialConnection->mInputSlot);   // ì—°ê²°ë  ìˆ˜ ìˆëŠ” ë…¸ë“œë“¤ì˜ ìŠ¬ë¡¯
+		ADD(v_initial, materialConnection->mOutputSlot);  // ì—°ê²°í•  ìˆ˜ ìˆëŠ” ë…¸ë“œë“¤ì˜ ìŠ¬ë¡¯
 	}
-	void Ser(Material *material)                       // material(ÀÛ¾÷ÀÌ ¼öÇàµÇ´Â ¿µ¿ª)ÀÇ °¢ ¿ä¼Ò¿¡ ´ëÇØ SerÀÛ¾÷ ¼öÇà
+	void Ser(Material *material)                       // material(ì‘ì—…ì´ ìˆ˜í–‰ë˜ëŠ” ì˜ì—­)ì˜ ê° ìš”ì†Œì— ëŒ€í•´ Serì‘ì—… ìˆ˜í–‰
 	{
-		ADD(v_initial, material->mName);                  // materialÀÇ ÀÌ¸§
-		ADD(v_materialComment, material->mComment);       // material¿¡ ´ëÇÑ ¼³¸í
-		ADD(v_initial, material->mMaterialNodes);         // materialÀÇ ³ëµåµé
-		ADD(v_initial, material->mMaterialConnections);   // materialÀÇ ¿¬°áµé
+		ADD(v_initial, material->mName);                  // materialì˜ ì´ë¦„
+		ADD(v_materialComment, material->mComment);       // materialì— ëŒ€í•œ ì„¤ëª…
+		ADD(v_initial, material->mMaterialNodes);         // materialì˜ ë…¸ë“œë“¤
+		ADD(v_initial, material->mMaterialConnections);   // materialì˜ ì—°ê²°ë“¤
 	}
-	bool Ser(Library *library)   // ¶óÀÌºê·¯¸®
+	bool Ser(Library *library)   // ë¼ì´ë¸ŒëŸ¬ë¦¬
 	{
-		if (!fp)  // ÆÄÀÏÆ÷ÀÎÅÍ°¡ ¾ø´Â °æ¿ì Á¾·á
+		if (!fp)  // íŒŒì¼í¬ì¸í„°ê°€ ì—†ëŠ” ê²½ìš° ì¢…ë£Œ
 			return false;
 		if (doWrite)
-			dataVersion = v_lastVersion-1;  // ¾²±â¸ğµåÀÎ °æ¿ì ¸¶Áö¸· ¹öÀüÀÇ ¹Ù·Î ÀÌÀü¹öÀüÀ» µ¥ÀÌÅÍ ¹öÀüÀ¸·Î ¼³Á¤
-		Ser(dataVersion);                   // µ¥ÀÌÅÍ ¹öÀü¿¡ ´ëÇØ Ser ÀÛ¾÷ ¼öÇà
-		if (dataVersion > v_lastVersion)    // ¿Ã¹Ù¸£Áö ¾ÊÀº ¹öÀüÀÎ °æ¿ì Á¾·á
+			dataVersion = v_lastVersion-1;  // ì“°ê¸°ëª¨ë“œì¸ ê²½ìš° ë§ˆì§€ë§‰ ë²„ì „ì˜ ë°”ë¡œ ì´ì „ë²„ì „ì„ ë°ì´í„° ë²„ì „ìœ¼ë¡œ ì„¤ì •
+		Ser(dataVersion);                   // ë°ì´í„° ë²„ì „ì— ëŒ€í•´ Ser ì‘ì—… ìˆ˜í–‰
+		if (dataVersion > v_lastVersion)    // ì˜¬ë°”ë¥´ì§€ ì•Šì€ ë²„ì „ì¸ ê²½ìš° ì¢…ë£Œ
 			return false; // no forward compatibility
-		ADD(v_initial, library->mMaterials);// material¿¡ ´ëÇØ Ser ÀÛ¾÷ ¼öÇà
+		ADD(v_initial, library->mMaterials);// materialì— ëŒ€í•´ Ser ì‘ì—… ìˆ˜í–‰
 		return true;
 	}
 	FILE *fp;
 	uint32_t dataVersion;
 };
 
-typedef Serialize<true> SerializeWrite;  // ¾²±â¸ğµå
-typedef Serialize<false> SerializeRead;  // ÀĞ±â¸ğµå
+typedef Serialize<true> SerializeWrite;  // ì“°ê¸°ëª¨ë“œ
+typedef Serialize<false> SerializeRead;  // ì½ê¸°ëª¨ë“œ
 
-void LoadLib(Library *library, const char *szFilename)  // ¶óÀÌºê·¯¸® ºÒ·¯¿À±â
+void LoadLib(Library *library, const char *szFilename)  // ë¼ì´ë¸ŒëŸ¬ë¦¬ ë¶ˆëŸ¬ì˜¤ê¸°
 {
 	SerializeRead(szFilename).Ser(library);
 }
 
-void SaveLib(Library *library, const char *szFilename)  // ¶óÀÌºê·¯¸® ÀúÀå
+void SaveLib(Library *library, const char *szFilename)  // ë¼ì´ë¸ŒëŸ¬ë¦¬ ì €ì¥
 {
 	SerializeWrite(szFilename).Ser(library);
 }

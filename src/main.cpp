@@ -1,4 +1,4 @@
-// https://github.com/CedricGuillemet/Imogen
+ï»¿// https://github.com/CedricGuillemet/Imogen
 //
 // The MIT License(MIT)
 // 
@@ -41,33 +41,33 @@
 #include "stb_image.h"
 #include "stb_image_write.h"
 
-// ------------------------------------- ¸Ó¸® ÁÖ¼® ---------------------------------
+// ------------------------------------- ë¨¸ë¦¬ ì£¼ì„ ---------------------------------
 
-// ÆÄÀÏ ÀÌ¸§ : Imogen.exe
-// ÀÛ¼ºÀÚ : CedricGuillemet (https://github.com/junhan-kim/Imogen)
-// ¸ñÀû : 2D ÅØ½ºÃÄ¸¦ ³ëµå ±â¹İ GUI·Î °£ÆíÇÏ°Ô »ı¼ºÇÏ±â À§ÇÑ ÇÁ·Î±×·¥.
-// Á¦ÇÑ »çÇ× : -
-// ¿À·ù Ã³¸® : -
-// ÀÌ·Â »çÇ× : main.cppÀÇ ÁÙ´ÜÀ§ ÁÖ¼® ¹× ¸Ó¸®ÁÖ¼® Ãß°¡ (±èÁØÇÑ, 2018-10-31) 
+// íŒŒì¼ ì´ë¦„ : Imogen.exe
+// ì‘ì„±ì : CedricGuillemet (https://github.com/junhan-kim/Imogen)
+// ëª©ì  : 2D í…ìŠ¤ì³ë¥¼ ë…¸ë“œ ê¸°ë°˜ GUIë¡œ ê°„í¸í•˜ê²Œ ìƒì„±í•˜ê¸° ìœ„í•œ í”„ë¡œê·¸ë¨.
+// ì œí•œ ì‚¬í•­ : -
+// ì˜¤ë¥˜ ì²˜ë¦¬ : -
+// ì´ë ¥ ì‚¬í•­ : main.cppì˜ ì¤„ë‹¨ìœ„ ì£¼ì„ ë° ë¨¸ë¦¬ì£¼ì„ ì¶”ê°€ (ê¹€ì¤€í•œ, 2018-10-31) 
 
 
 TileNodeEditGraphDelegate *TileNodeEditGraphDelegate::mInstance = NULL;
 unsigned int gCPUCount = 1;
-int Log(const char *szFormat, ...) // °¡º¯ÀÎÀÚ¸¦ ¹Ş¾Æ ·Î±×¸¦ ±â·ÏÇÏ´Â ÇÔ¼ö
+int Log(const char *szFormat, ...) // ê°€ë³€ì¸ìë¥¼ ë°›ì•„ ë¡œê·¸ë¥¼ ê¸°ë¡í•˜ëŠ” í•¨ìˆ˜
 {
 	va_list ptr_arg;
-	va_start(ptr_arg, szFormat); // ptr_arg¿¡°Ô °¡º¯ÀÎÀÚÁß Ã¹¹øÂ° ÀÎÀÚÀÇ ÁÖ¼Ò¸¦ ¾Ë·ÁÁÜ.
+	va_start(ptr_arg, szFormat); // ptr_argì—ê²Œ ê°€ë³€ì¸ìì¤‘ ì²«ë²ˆì§¸ ì¸ìì˜ ì£¼ì†Œë¥¼ ì•Œë ¤ì¤Œ.
 
 	char buf[1024];
-	vsprintf(buf, szFormat, ptr_arg); // °¡º¯ÀÎÀÚµéÀ» buf¿¡ ¹ŞÀ½
+	vsprintf(buf, szFormat, ptr_arg); // ê°€ë³€ì¸ìë“¤ì„ bufì— ë°›ìŒ
 
-	static FILE *fp = fopen("log.txt", "wt"); // log.txt¸¦ write¸ğµå·Î ¿­¾î fp¿¡ ÆÄÀÏÆ÷ÀÎÅÍ¸¦ ÀúÀå
-	if (fp) // ¹®Á¦°¡ ¾øÀ¸¸é
+	static FILE *fp = fopen("log.txt", "wt"); // log.txtë¥¼ writeëª¨ë“œë¡œ ì—´ì–´ fpì— íŒŒì¼í¬ì¸í„°ë¥¼ ì €ì¥
+	if (fp) // ë¬¸ì œê°€ ì—†ìœ¼ë©´
 	{
-		fprintf(fp, buf); // buf¿¡ ÀÖ´Â °ªÀ» fp°¡ °¡¸®Å°´Â ÆÄÀÏ¿¡ ¾¸
+		fprintf(fp, buf); // bufì— ìˆëŠ” ê°’ì„ fpê°€ ê°€ë¦¬í‚¤ëŠ” íŒŒì¼ì— ì”€
 		fflush(fp);
 	}
-	DebugLogText(buf); // buf¿¡ ÀÖ´Â °ªÀ¸·Î µğ¹ö±ë
+	DebugLogText(buf); // bufì— ìˆëŠ” ê°’ìœ¼ë¡œ ë””ë²„ê¹…
 	va_end(ptr_arg);
 	return 0;
 }
@@ -75,127 +75,127 @@ int Log(const char *szFormat, ...) // °¡º¯ÀÎÀÚ¸¦ ¹Ş¾Æ ·Î±×¸¦ ±â·ÏÇÏ´Â ÇÔ¼ö
 int main(int, char**)
 {
 	// Setup SDL
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0) // SDLÀÇ Å¸ÀÌ¸Ó ½Ã½ºÅÛ°ú ¿Àµğ¿À ½Ã½ºÅÛÀ» ÃÊ±âÈ­ÇÔ
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0) // SDLì˜ íƒ€ì´ë¨¸ ì‹œìŠ¤í…œê³¼ ì˜¤ë””ì˜¤ ì‹œìŠ¤í…œì„ ì´ˆê¸°í™”í•¨
 	{
-		printf("Error: %s\n", SDL_GetError()); // ÃÊ±âÈ­¿¡ ¹®Á¦°¡ ÀÖÀ»½Ã Error ÄÚµå Ãâ·Â ¹× ÇÁ·Î±×·¥ Á¾·á
+		printf("Error: %s\n", SDL_GetError()); // ì´ˆê¸°í™”ì— ë¬¸ì œê°€ ìˆì„ì‹œ Error ì½”ë“œ ì¶œë ¥ ë° í”„ë¡œê·¸ë¨ ì¢…ë£Œ
 		return -1;
 	}
 
 	// Decide GL+GLSL versions
-#if __APPLE__ // ¾ÖÇÃÀÎ °æ¿ì
+#if __APPLE__ // ì• í”Œì¸ ê²½ìš°
 	// GL 3.2 Core + GLSL 150
 	const char* glsl_version = "#version 150";
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG); // Always required on Mac
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-#else // ±× ¿ÜÀÇ È¯°æÀÎ °æ¿ì
+#else // ê·¸ ì™¸ì˜ í™˜ê²½ì¸ ê²½ìš°
 	// GL 3.0 + GLSL 130
-	const char* glsl_version = "#version 130";                                     // glsl ¹öÀü ±â·Ï
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);                                  // SDL ¼³Á¤ ÇÃ·¡±× : 0(±âº»°ª)
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE); // OpenGL ÄÚ¾î ÇÁ·ÎÆÄÀÏ ¼³Á¤ : SDL_GL_CONTEXT_PROFILE_CORE(±âº»°ª)
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);                          // ÄÁÅØ½ºÆ® ÁÖ¿ä ¹öÀü : 3
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);                          // ÄÁÅØ½ºÆ® ºÎ ¹öÀü : 0
+	const char* glsl_version = "#version 130";                                     // glsl ë²„ì „ ê¸°ë¡
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);                                  // SDL ì„¤ì • í”Œë˜ê·¸ : 0(ê¸°ë³¸ê°’)
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE); // OpenGL ì½”ì–´ í”„ë¡œíŒŒì¼ ì„¤ì • : SDL_GL_CONTEXT_PROFILE_CORE(ê¸°ë³¸ê°’)
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);                          // ì»¨í…ìŠ¤íŠ¸ ì£¼ìš” ë²„ì „ : 3
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);                          // ì»¨í…ìŠ¤íŠ¸ ë¶€ ë²„ì „ : 0
 #endif
 	// Create window with graphics context
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);     // ÀÌÁß ¹öÆÛ¸µ »ç¿ë : 1(»ç¿ë)
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);      // ±íÀÌ ¹öÆÛ(z ¹öÆÛ)ÀÇ ÃÖ´ë ºñÆ® ¼ö : 24
-	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);     // ½ºÅÙ½Ç ¹öÆÛ ÃÖ¼Ò ºñÆ® ¼ö : 8
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);     // ì´ì¤‘ ë²„í¼ë§ ì‚¬ìš© : 1(ì‚¬ìš©)
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);      // ê¹Šì´ ë²„í¼(z ë²„í¼)ì˜ ìµœëŒ€ ë¹„íŠ¸ ìˆ˜ : 24
+	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);     // ìŠ¤í…ì‹¤ ë²„í¼ ìµœì†Œ ë¹„íŠ¸ ìˆ˜ : 8
 	SDL_DisplayMode current;
-	SDL_GetCurrentDisplayMode(0, &current);          // ÇöÀç µğ½ºÇÃ·¹ÀÌ ¸ğµå¸¦ current¿¡ ÀúÀå
+	SDL_GetCurrentDisplayMode(0, &current);          // í˜„ì¬ ë””ìŠ¤í”Œë ˆì´ ëª¨ë“œë¥¼ currentì— ì €ì¥
 	SDL_Window* window = SDL_CreateWindow("Imogen 0.1.1", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
-												     // À©µµ¿ì Ã¢ »ı¼º (Á¦¸ñ : Imogen 0.1.1
-                                                     //                 À§Ä¡ : È­¸é Áß¾Ó
-                                                     //                 ÇØ»óµµ : 1280 x 720
-                                                     //                 ÇÃ·¡±× : OpenGL Çü½Ä, »çÀÌÁî Á¶Á¤ °¡´É, ÃÖ´ë Å©±â·Î ½ÃÀÛ)
-	SDL_GLContext gl_context = SDL_GL_CreateContext(window);	// OpenGL ÄÁÅØ½ºÆ® »ı¼ºÇÏ°í gl_context¿¡ Àü´Ş
+												     // ìœˆë„ìš° ì°½ ìƒì„± (ì œëª© : Imogen 0.1.1
+                                                     //                 ìœ„ì¹˜ : í™”ë©´ ì¤‘ì•™
+                                                     //                 í•´ìƒë„ : 1280 x 720
+                                                     //                 í”Œë˜ê·¸ : OpenGL í˜•ì‹, ì‚¬ì´ì¦ˆ ì¡°ì • ê°€ëŠ¥, ìµœëŒ€ í¬ê¸°ë¡œ ì‹œì‘)
+	SDL_GLContext gl_context = SDL_GL_CreateContext(window);	// OpenGL ì»¨í…ìŠ¤íŠ¸ ìƒì„±í•˜ê³  gl_contextì— ì „ë‹¬
 	SDL_GL_SetSwapInterval(1);									// Enable vsync
 
 							   // Initialize OpenGL loader
-#if defined(IMGUI_IMPL_OPENGL_LOADER_GL3W)    // GL3W°¡ Á¤ÀÇµÈ °æ¿ì
+#if defined(IMGUI_IMPL_OPENGL_LOADER_GL3W)    // GL3Wê°€ ì •ì˜ëœ ê²½ìš°
 	bool err = gl3wInit() != 0;               
-#elif defined(IMGUI_IMPL_OPENGL_LOADER_GLEW)  // GLEW°¡ Á¤ÀÇµÈ °æ¿ì
+#elif defined(IMGUI_IMPL_OPENGL_LOADER_GLEW)  // GLEWê°€ ì •ì˜ëœ ê²½ìš°
 	bool err = glewInit() != GLEW_OK;
-#elif defined(IMGUI_IMPL_OPENGL_LOADER_GLAD)  // GLAD°¡ Á¤ÀÇµÈ °æ¿ì
+#elif defined(IMGUI_IMPL_OPENGL_LOADER_GLAD)  // GLADê°€ ì •ì˜ëœ ê²½ìš°
 	bool err = gladLoadGL() == 0;
 #endif
-	if (err) // À§ÀÇ ¿¡·¯Ã¼Å©¿¡¼­ ¿¡·¯°¡ ¹ß»ıÇÑ °æ¿ì, ¿¡·¯ Ãâ·Â ÈÄ Á¾·á
+	if (err) // ìœ„ì˜ ì—ëŸ¬ì²´í¬ì—ì„œ ì—ëŸ¬ê°€ ë°œìƒí•œ ê²½ìš°, ì—ëŸ¬ ì¶œë ¥ í›„ ì¢…ë£Œ
 	{
 		fprintf(stderr, "Failed to initialize OpenGL loader!\n");
 		return 1;
 	}
 
 	// Setup Dear ImGui binding
-	IMGUI_CHECKVERSION();                             // ¹öÀü Ã¼Å©
-	ImGui::CreateContext();                           // Imgui ÄÁÅØ½ºÆ® »ı¼º
-	ImGuiIO& io = ImGui::GetIO(); (void)io;           // ÀÔÃâ·Â Á¤º¸ ÀúÀå
+	IMGUI_CHECKVERSION();                             // ë²„ì „ ì²´í¬
+	ImGui::CreateContext();                           // Imgui ì»¨í…ìŠ¤íŠ¸ ìƒì„±
+	ImGuiIO& io = ImGui::GetIO(); (void)io;           // ì…ì¶œë ¥ ì •ë³´ ì €ì¥
 	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
 
-	ImGui_ImplSDL2_InitForOpenGL(window, gl_context); // imgui¸¦ ÇöÀç À©µµ¿ì¿¡ ¹ÙÀÎµù ¹× ÃÊ±âÈ­
-	ImGui_ImplOpenGL3_Init(glsl_version);             // OpenGL ÃÊ±âÈ­
+	ImGui_ImplSDL2_InitForOpenGL(window, gl_context); // imguië¥¼ í˜„ì¬ ìœˆë„ìš°ì— ë°”ì¸ë”© ë° ì´ˆê¸°í™”
+	ImGui_ImplOpenGL3_Init(glsl_version);             // OpenGL ì´ˆê¸°í™”
 
 	// Setup style
-	ImGui::StyleColorsDark();                         // Å×¸¶ÄÃ·¯¸¦ °ËÀº»öÀ¸·Î ¼³Á¤
+	ImGui::StyleColorsDark();                         // í…Œë§ˆì»¬ëŸ¬ë¥¼ ê²€ì€ìƒ‰ìœ¼ë¡œ ì„¤ì •
 
 	static const char* libraryFilename = "library.dat";
 	Library library;                                     
-	LoadLib(&library, libraryFilename);                  // ¶óÀÌºê·¯¸® ·Îµå ¹× ÆÄÀÏÀÌ¸§ ¼³Á¤
+	LoadLib(&library, libraryFilename);                  // ë¼ì´ë¸ŒëŸ¬ë¦¬ ë¡œë“œ ë° íŒŒì¼ì´ë¦„ ì„¤ì •
 	
 	Evaluation evaluation;
 	Imogen imogen;
 	
-	evaluation.SetEvaluationGLSL(imogen.shaderFileNames);  // glsl¿¡ »ç¿ëµÉ ¼ÎÀÌ´õ¸¦ ÀÌ¿ëÇÏ¿© ÀÌÈÄ¿¡ ¼öÇàµÉ Æò°¡ÀÛ¾÷À» ÃÊ±âÈ­ÇÔ
-	evaluation.LoadEquiRect("studio017PoT.png");           // ·»´õ¸µÀ» ÁøÇàÇÒ Rect¸¦ ÃÊ±âÈ­
+	evaluation.SetEvaluationGLSL(imogen.shaderFileNames);  // glslì— ì‚¬ìš©ë  ì…°ì´ë”ë¥¼ ì´ìš©í•˜ì—¬ ì´í›„ì— ìˆ˜í–‰ë  í‰ê°€ì‘ì—…ì„ ì´ˆê¸°í™”í•¨
+	evaluation.LoadEquiRect("studio017PoT.png");           // ë Œë”ë§ì„ ì§„í–‰í•  Rectë¥¼ ì´ˆê¸°í™”
 
 	TileNodeEditGraphDelegate nodeGraphDelegate(evaluation);
 
 	// Main loop
 	bool done = false;
-	while (!done) // Á¾·áÀÌº¥Æ® µé¾î¿À¸é ·çÇÁ ³ª°¨
+	while (!done) // ì¢…ë£Œì´ë²¤íŠ¸ ë“¤ì–´ì˜¤ë©´ ë£¨í”„ ë‚˜ê°
 	{
 		SDL_Event event;
-		while (SDL_PollEvent(&event)) // ÀÌº¥Æ® Æú¸µ
+		while (SDL_PollEvent(&event)) // ì´ë²¤íŠ¸ í´ë§
 		{
-			ImGui_ImplSDL2_ProcessEvent(&event);  // ÀÌº¥Æ®¸¦ imgui¿¡¼­ ÀÎ½Ä
-			if (event.type == SDL_QUIT) // º¸ÆíÀûÀÎ Á¾·á ÀÌº¥Æ®°¡ µé¾î¿Â °æ¿ì
+			ImGui_ImplSDL2_ProcessEvent(&event);  // ì´ë²¤íŠ¸ë¥¼ imguiì—ì„œ ì¸ì‹
+			if (event.type == SDL_QUIT) // ë³´í¸ì ì¸ ì¢…ë£Œ ì´ë²¤íŠ¸ê°€ ë“¤ì–´ì˜¨ ê²½ìš°
 				done = true;
 			if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(window))
-				                        // À©µµ¿ì Ã¢¿¡¼­ ÀÌº¥Æ®·Î CLOSE ¸í·ÉÀÌ µé¾î¿Â °æ¿ì
+				                        // ìœˆë„ìš° ì°½ì—ì„œ ì´ë²¤íŠ¸ë¡œ CLOSE ëª…ë ¹ì´ ë“¤ì–´ì˜¨ ê²½ìš°
 				done = true;
 		}
 
 		// Start the Dear ImGui frame
-		ImGui_ImplOpenGL3_NewFrame();       // OpenGL ÇÁ·¹ÀÓ »ı¼º
-		ImGui_ImplSDL2_NewFrame(window);    // SDL ÇÁ·¹ÀÓ »ı¼º
-		ImGui::NewFrame();                  // imgui ÇÁ·¹ÀÓ »ı¼º
+		ImGui_ImplOpenGL3_NewFrame();       // OpenGL í”„ë ˆì„ ìƒì„±
+		ImGui_ImplSDL2_NewFrame(window);    // SDL í”„ë ˆì„ ìƒì„±
+		ImGui::NewFrame();                  // imgui í”„ë ˆì„ ìƒì„±
 
-		imogen.Show(library, nodeGraphDelegate, evaluation);  // ÇÁ·Î±×·¥ÀÇ ÀüÃ¼ ³»¿ëÀ» Show (ÀÏÁ¾ÀÇ ÀÛ¾÷´ÜÀ§ »õ·Î°íÄ§ ±â´É)
+		imogen.Show(library, nodeGraphDelegate, evaluation);  // í”„ë¡œê·¸ë¨ì˜ ì „ì²´ ë‚´ìš©ì„ Show (ì¼ì¢…ì˜ ì‘ì—…ë‹¨ìœ„ ìƒˆë¡œê³ ì¹¨ ê¸°ëŠ¥)
 
-		evaluation.RunEvaluation();  // ¡ÚÇÁ·Î±×·¥ÀÇ °ÅÀÇ ¸ğµç ÀÛ¾÷À» ÃÑ°ıÇÏ´Â ÇÔ¼ö. 
-		                             //   ÀÌÁ¦±îÁö ´©ÀûµÈ ÀÔ·Â ³»¿ë(ÀÌº¥Æ®)µéÀ» ¼øÂ÷ÀûÀ¸·Î Æò°¡ÇÏ¿©, ³»ºÎ °ªµéÀ» º¯È­½ÃÅ´
+		evaluation.RunEvaluation();  // â˜…í”„ë¡œê·¸ë¨ì˜ ê±°ì˜ ëª¨ë“  ì‘ì—…ì„ ì´ê´„í•˜ëŠ” í•¨ìˆ˜. 
+		                             //   ì´ì œê¹Œì§€ ëˆ„ì ëœ ì…ë ¥ ë‚´ìš©(ì´ë²¤íŠ¸)ë“¤ì„ ìˆœì°¨ì ìœ¼ë¡œ í‰ê°€í•˜ì—¬, ë‚´ë¶€ ê°’ë“¤ì„ ë³€í™”ì‹œí‚´
 
 		// render everything
-		glClearColor(0.45f, 0.4f, 0.4f, 1.f);     // RGBA ÇüÅÂ·Î ÄÃ·¯¹öÆÛ¸¦ Áö¿ì´Â ¿ëµµÀÇ °ª ÁöÁ¤
-		glClear(GL_COLOR_BUFFER_BIT);             // ÄÃ·¯ ¹öÆÛ Å¬¸®¾î
-		ImGui::Render();                          // ·»´õ¸µ
+		glClearColor(0.45f, 0.4f, 0.4f, 1.f);     // RGBA í˜•íƒœë¡œ ì»¬ëŸ¬ë²„í¼ë¥¼ ì§€ìš°ëŠ” ìš©ë„ì˜ ê°’ ì§€ì •
+		glClear(GL_COLOR_BUFFER_BIT);             // ì»¬ëŸ¬ ë²„í¼ í´ë¦¬ì–´
+		ImGui::Render();                          // ë Œë”ë§
 
-		SDL_GL_MakeCurrent(window, gl_context);                               // OpenGL·Î ·»´õ¸µÇÏ±â À§ÇÑ ÄÁÅØ½ºÆ® ÁöÁ¤
-		glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);       // ºäÆ÷Æ®ÀÇ Ç¥½Ã ¿µ¿ªÀ» ÁöÁ¤ ( 0, 0 ÁöÁ¡¿¡ ioÀÇ µğ½ºÇÃ·¹ÀÌ Å©±â ¿µ¿ª¸¸Å­ )
+		SDL_GL_MakeCurrent(window, gl_context);                               // OpenGLë¡œ ë Œë”ë§í•˜ê¸° ìœ„í•œ ì»¨í…ìŠ¤íŠ¸ ì§€ì •
+		glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);       // ë·°í¬íŠ¸ì˜ í‘œì‹œ ì˜ì—­ì„ ì§€ì • ( 0, 0 ì§€ì ì— ioì˜ ë””ìŠ¤í”Œë ˆì´ í¬ê¸° ì˜ì—­ë§Œí¼ )
 		glClearColor(0.,0.,0.,0.);
 		glClear(GL_COLOR_BUFFER_BIT);
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());               // Imgui·Î ·»´õ¸µ
-		SDL_GL_SwapWindow(window);                                            // Ã¢À» OpenGL ·»´õ¸µÀ» ÅëÇØ ¾÷µ¥ÀÌÆ®
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());               // Imguië¡œ ë Œë”ë§
+		SDL_GL_SwapWindow(window);                                            // ì°½ì„ OpenGL ë Œë”ë§ì„ í†µí•´ ì—…ë°ì´íŠ¸
 	}
 	
-	SaveLib(&library, libraryFilename);       // ¶óÀÌºê·¯¸® ÀúÀå
+	SaveLib(&library, libraryFilename);       // ë¼ì´ë¸ŒëŸ¬ë¦¬ ì €ì¥
 	// Cleanup
-	ImGui_ImplOpenGL3_Shutdown();             // OpenGL Á¾·á
-	ImGui_ImplSDL2_Shutdown();                // SDL Á¾·á
-	ImGui::DestroyContext();                  // imgui ÄÁÅØ½ºÆ® Á¦°Å
+	ImGui_ImplOpenGL3_Shutdown();             // OpenGL ì¢…ë£Œ
+	ImGui_ImplSDL2_Shutdown();                // SDL ì¢…ë£Œ
+	ImGui::DestroyContext();                  // imgui ì»¨í…ìŠ¤íŠ¸ ì œê±°
 
-	SDL_GL_DeleteContext(gl_context);         // SDL ÄÁÅØ½ºÆ® Á¦°Å
-	SDL_DestroyWindow(window);                // À©µµ¿ì Ã¢ Á¦°Å
-	SDL_Quit();                               // SDL Á¾·á
+	SDL_GL_DeleteContext(gl_context);         // SDL ì»¨í…ìŠ¤íŠ¸ ì œê±°
+	SDL_DestroyWindow(window);                // ìœˆë„ìš° ì°½ ì œê±°
+	SDL_Quit();                               // SDL ì¢…ë£Œ
 
 	return 0;
 }
