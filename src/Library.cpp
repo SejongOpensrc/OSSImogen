@@ -1,4 +1,4 @@
-// https://github.com/CedricGuillemet/Imogen
+﻿// https://github.com/CedricGuillemet/Imogen
 //
 // The MIT License(MIT)
 // 
@@ -23,535 +23,144 @@
 // SOFTWARE.
 //
 
-#include "Library.h"
-#include "imgui.h"
 
-enum : uint32_t
+
+
+#include "Library.h"
+
+  
+// 중요 참고 사항 : Ser - 데이터를 파일에 쓰거나 읽는 작업 수행
+
+
+enum : uint32_t  // 열거형 정의
 {
-	v_initial,
-	v_materialComment,
-	v_thumbnail,
-	v_nodeImage,
-	v_rugs,
-	v_nodeTypeName,
-	v_lastVersion
+	v_initial,          // 버전
+	v_materialComment,  // material에 대한 설명
+	v_lastVersion       // 마지막 버전
 };
-#define ADD(_fieldAdded, _fieldName) if (dataVersion >= _fieldAdded){ Ser(_fieldName); }
-#define ADD_LOCAL(_localAdded, _type, _localName, _defaultValue) \
-	_type _localName = (_defaultValue); \
-	if (dataVersion >= (_localAdded)) { Ser(_localName)); }
+#define ADD(_fieldAdded, _fieldName) if (dataVersion >= _fieldAdded){ Ser(_fieldName); }         // 정상적인 버전인 경우, 해당 field에 대해 Ser작업 수행 
+#define ADD_LOCAL(_localAdded, _type, _localName, _defaultValue) \                                   
+	_type _localName = (_defaultValue); \                                                        // localName을 초기화하고
+	if (dataVersion >= (_localAdded)) { Ser(_localName)); }                                      // 정상적인 버전인 경우, 해당 local에 대해 Ser작업 수행
 #define REM(_fieldAdded, _fieldRemoved, _type, _fieldName, _defaultValue) \
-	_type _fieldName = (_defaultValue); \
-	if (dataVersion >= (_fieldAdded) && dataVersion < (_fieldRemoved)) { Ser(_fieldName); }
-#define VERSION_IN_RANGE(_from, _to) \
+	_type _fieldName = (_defaultValue); \                                                        // localName을 초기화하고
+	if (dataVersion >= (_fieldAdded) && dataVersion < (_fieldRemoved)) { Ser(_fieldName); }      // 정상적인 버전인 경우, 해당 field에 대해 Ser작업 수행
+#define VERSION_IN_RANGE(_from, _to) \                                                           // 버전이 from과 to 사이에 있는지에 대하여 반환 
 	(dataVersion >= (_from) && dataVersion < (_to))
 
-template<bool doWrite> struct Serialize
+template<bool doWrite> struct Serialize   // 클래스처럼 구현된 구조체 (C++ 방식)
 {
-	Serialize(const char *szFilename)
+	Serialize(const char *szFilename)  // 생성자
 	{
-		fp = fopen(szFilename, doWrite ? "wb" : "rb");
+		fp = fopen(szFilename, doWrite ? "wb" : "rb");  // 쓰기모드 or 읽기모드로 파일을 open
 	}
-	~Serialize()
+	~Serialize()                      // 소멸자
 	{
 		if (fp)
-			fclose(fp);
+			fclose(fp);                                 // 파일 close
 	}
-	template<typename T> void Ser(T& data)
+	template<typename T> void Ser(T& data)  // 제네릭 데이터											
 	{
-		if (doWrite)
-			fwrite(&data, sizeof(T), 1, fp);
-		else
-			fread(&data, sizeof(T), 1, fp);
+		if (doWrite)  // 쓰기모드
+			fwrite(&data, sizeof(T), 1, fp);  // data를 fp에 씀
+		else          // 읽기모드
+			fread(&data, sizeof(T), 1, fp);   // fp에서 data로 읽어들임
 	}
-	void Ser(std::string& data)
+	void Ser(std::string& data)  // 스트링 데이터
 	{
 		if (doWrite)
 		{
 			uint32_t len = uint32_t(data.length() + 1);
-			fwrite(&len, sizeof(uint32_t), 1, fp);
-			fwrite(data.c_str(), len, 1, fp);
+			fwrite(&len, sizeof(uint32_t), 1, fp);   // 데이터의 길이(len)를 fp에 쓰고
+			fwrite(data.c_str(), len, 1, fp);        // data의 string도 fp에 씀
 		}
 		else
 		{
 			uint32_t len;
-			fread(&len, sizeof(uint32_t), 1, fp);
-			data.resize(len);
-			fread(&data[0], len, 1, fp);
+			fread(&len, sizeof(uint32_t), 1, fp);   // 데이터의 길이를 읽어들이고 
+			data.resize(len);                       // 길이에 맞게 데이터를 리사이징하여
+			fread(&data[0], len, 1, fp);            // 데이터에 스트링을 읽어들임
 		}
 	}
-	template<typename T> void Ser(std::vector<T>& data)
+	template<typename T> void Ser(std::vector<T>& data)  // 제네릭 벡터 데이터
 	{
-		uint32_t count = uint32_t(data.size());
-		Ser(count);
-		data.resize(count);
-		for (auto& item : data)
-			Ser(&item);
+		uint32_t count = uint32_t(data.size());  // 데이터의 길이 읽어들이고
+		Ser(count);                              // 길이(count)에 대하여 Ser 작업을 수행 후
+		data.resize(count);                      // 길이에 맞게 데이터를 리사이징하여
+		for (auto& item : data)                  // data 컬렉션에 대해 
+			Ser(&item);                          // 모두 Ser 작업을 해줌
 	}
-	void Ser(std::vector<uint8_t>& data)
+	void Ser(std::vector<uint8_t>& data)  // int형 벡터 데이터 (반환 없음)
 	{
 		uint32_t count = uint32_t(data.size());
 		Ser(count);
-		if (!count)
+		if (!count)                                 // count = 0 이면 끝
 			return;
 		if (doWrite)
 		{
-			fwrite(data.data(), count, 1, fp);
+			fwrite(data.data(), count, 1, fp);      // 길이만큼 data를 fp에 씀
 		}
 		else
 		{
-			data.resize(count);
-			fread(&data[0], count, 1, fp);
+			data.resize(count);                     
+			fread(&data[0], count, 1, fp);          // 길이만큼 fp에서 data로 읽어들임
 		}
 	}
 
-	void Ser(InputSampler *inputSampler)
+	void Ser(InputSampler *inputSampler)               // inputSampler(샘플링 작업이 수행되는 텍스쳐)의 각 요소에 대해 Ser작업 수행
 	{
-		ADD(v_initial, inputSampler->mWrapU);
-		ADD(v_initial, inputSampler->mWrapV);
-		ADD(v_initial, inputSampler->mFilterMin);
-		ADD(v_initial, inputSampler->mFilterMag);
+		ADD(v_initial, inputSampler->mWrapU);         // U축에 대한 래핑
+		ADD(v_initial, inputSampler->mWrapV);         // V축에 대한 래핑
+		ADD(v_initial, inputSampler->mFilterMin);     // 축소 필터
+		ADD(v_initial, inputSampler->mFilterMag);     // 확대 필터
 	}
-	void Ser(MaterialNode *materialNode)
+	void Ser(MaterialNode *materialNode)               // materialNode(텍스쳐를 포함하고 있는 노드)의 각 요소에 대해 Ser작업 수행
 	{
-		ADD(v_initial, materialNode->mType);
-		ADD(v_nodeTypeName, materialNode->mTypeName);
-		ADD(v_initial, materialNode->mPosX);
-		ADD(v_initial, materialNode->mPosY);
-		ADD(v_initial, materialNode->mInputSamplers);
-		ADD(v_initial, materialNode->mParameters);
-		ADD(v_nodeImage, materialNode->mImage);
+		ADD(v_initial, materialNode->mType);            // 노드타입
+		ADD(v_initial, materialNode->mPosX);            // 노드의 x 위치
+		ADD(v_initial, materialNode->mPosY);            // 노드의 y 위치
+		ADD(v_initial, materialNode->mInputSamplers);   // 노드가 포함하고 있는 inputSampler
+		ADD(v_initial, materialNode->mParameters);      // 패러미터 값들
 	}
-	void Ser(MaterialNodeRug *materialNodeRug)
+	void Ser(MaterialConnection *materialConnection)   // materialConnection(노드의 연결들)의 각 요소에 대해 Ser작업 수행
 	{
-		ADD(v_rugs, materialNodeRug->mPosX);
-		ADD(v_rugs, materialNodeRug->mPosY);
-		ADD(v_rugs, materialNodeRug->mSizeX);
-		ADD(v_rugs, materialNodeRug->mSizeY);
-		ADD(v_rugs, materialNodeRug->mColor);
-		ADD(v_rugs, materialNodeRug->mComment);
+		ADD(v_initial, materialConnection->mInputNode);   // 나에게 연결되는 노드
+		ADD(v_initial, materialConnection->mOutputNode);  // 나에게서 연결된 노드
+		ADD(v_initial, materialConnection->mInputSlot);   // 연결될 수 있는 노드들의 슬롯
+		ADD(v_initial, materialConnection->mOutputSlot);  // 연결할 수 있는 노드들의 슬롯
 	}
-	void Ser(MaterialConnection *materialConnection)
+	void Ser(Material *material)                       // material(작업이 수행되는 영역)의 각 요소에 대해 Ser작업 수행
 	{
-		ADD(v_initial, materialConnection->mInputNode);
-		ADD(v_initial, materialConnection->mOutputNode);
-		ADD(v_initial, materialConnection->mInputSlot);
-		ADD(v_initial, materialConnection->mOutputSlot);
+		ADD(v_initial, material->mName);                  // material의 이름
+		ADD(v_materialComment, material->mComment);       // material에 대한 설명
+		ADD(v_initial, material->mMaterialNodes);         // material의 노드들
+		ADD(v_initial, material->mMaterialConnections);   // material의 연결들
 	}
-	void Ser(Material *material)
+	bool Ser(Library *library)   // 라이브러리
 	{
-		ADD(v_initial, material->mName);
-		REM(v_materialComment, v_rugs, std::string, (material->mComment), "");
-		ADD(v_initial, material->mMaterialNodes);
-		ADD(v_initial, material->mMaterialConnections);
-		ADD(v_thumbnail, material->mThumbnail);
-		ADD(v_rugs, material->mMaterialRugs);
-	}
-	bool Ser(Library *library)
-	{
-		if (!fp)
+		if (!fp)  // 파일포인터가 없는 경우 종료
 			return false;
 		if (doWrite)
-			dataVersion = v_lastVersion-1;
-		Ser(dataVersion);
-		if (dataVersion > v_lastVersion)
+			dataVersion = v_lastVersion-1;  // 쓰기모드인 경우 마지막 버전의 바로 이전버전을 데이터 버전으로 설정
+		Ser(dataVersion);                   // 데이터 버전에 대해 Ser 작업 수행
+		if (dataVersion > v_lastVersion)    // 올바르지 않은 버전인 경우 종료
 			return false; // no forward compatibility
-		ADD(v_initial, library->mMaterials);
+		ADD(v_initial, library->mMaterials);// material에 대해 Ser 작업 수행
 		return true;
 	}
 	FILE *fp;
 	uint32_t dataVersion;
 };
 
-typedef Serialize<true> SerializeWrite;
-typedef Serialize<false> SerializeRead;
+typedef Serialize<true> SerializeWrite;  // 쓰기모드
+typedef Serialize<false> SerializeRead;  // 읽기모드
 
-void LoadLib(Library *library, const char *szFilename)
+void LoadLib(Library *library, const char *szFilename)  // 라이브러리 불러오기
 {
-	SerializeRead loadSer(szFilename);
-	loadSer.Ser(library);
-
-	for (auto& material : library->mMaterials)
-	{
-		material.mThumbnailTextureId = 0;
-		material.mRuntimeUniqueId = GetRuntimeId();
-		for (auto& node : material.mMaterialNodes)
-		{
-			node.mRuntimeUniqueId = GetRuntimeId();
-			if (loadSer.dataVersion > v_nodeTypeName)
-			{
-				node.mType = uint32_t(GetMetaNodeIndex(node.mTypeName));
-			}
-		}
-	}
+	SerializeRead(szFilename).Ser(library);
 }
 
-void SaveLib(Library *library, const char *szFilename)
+void SaveLib(Library *library, const char *szFilename)  // 라이브러리 저장
 {
 	SerializeWrite(szFilename).Ser(library);
-}
-
-unsigned int GetRuntimeId()
-{
-	static unsigned int runtimeId = 0;
-	return ++runtimeId;
-}
-
-size_t GetParameterTypeSize(ConTypes paramType)
-{
-	switch (paramType)
-	{
-	case Con_Angle:
-	case Con_Float:
-		return sizeof(float);
-	case Con_Angle2:
-	case Con_Float2:
-		return sizeof(float) * 2;
-	case Con_Angle3:
-	case Con_Float3:
-		return sizeof(float) * 3;
-	case Con_Angle4:
-	case Con_Color4:
-	case Con_Float4:
-		return sizeof(float) * 4;
-	case Con_Ramp:
-		return sizeof(float) * 2 * 8;
-	case Con_Enum:
-	case Con_Int:
-		return sizeof(int);
-	case Con_FilenameRead:
-	case Con_FilenameWrite:
-		return 1024;
-	case Con_ForceEvaluate:
-		return 0;
-	case Con_Bool:
-		return sizeof(int);
-	default:
-		assert(0);
-	}
-	return -1;
-}
-
-std::vector<MetaNode> gMetaNodes;
-std::map<std::string, size_t> gMetaNodesIndices;
-
-size_t GetMetaNodeIndex(const std::string& metaNodeName)
-{
-	auto iter = gMetaNodesIndices.find(metaNodeName);
-	if (iter == gMetaNodesIndices.end())
-		return -1;
-	return iter->second;
-}
-void LoadMetaNodes()
-{
-	static const uint32_t hcTransform = IM_COL32(200, 200, 200, 255);
-	static const uint32_t hcGenerator = IM_COL32(150, 200, 150, 255);
-	static const uint32_t hcMaterial = IM_COL32(150, 150, 200, 255);
-	static const uint32_t hcBlend = IM_COL32(200, 150, 150, 255);
-	static const uint32_t hcFilter = IM_COL32(200, 200, 150, 255);
-	static const uint32_t hcNoise = IM_COL32(150, 250, 150, 255);
-	static const uint32_t hcPaint = IM_COL32(100, 250, 180, 255);
-
-
-	gMetaNodes = {
-
-		{
-			"Circle", hcGenerator, 1
-			,{ {} }
-		,{ { "", Con_Float4 } }
-		,{ { "Radius", Con_Float, -.5f,0.5f,0.f,0.f },{ "T", Con_Float } }
-		}
-		,
-		{
-			"Transform", hcTransform, 0
-			,{ { "", Con_Float4 } }
-		,{ { "", Con_Float4 } }
-		,{ { "Translate", Con_Float2, 1.f,0.f,1.f,0.f, true },{ "Scale", Con_Float2 },{ "Rotation", Con_Angle } }
-		}
-		,
-		{
-			"Square", hcGenerator, 1
-			,{ {} }
-		,{ { "", Con_Float4 } }
-		,{ { "Width", Con_Float, -.5f,0.5f,0.f,0.f } }
-		}
-		,
-		{
-			"Checker", hcGenerator, 1
-			,{ {} }
-		,{ { "", Con_Float4 } }
-		,{}
-		}
-		,
-		{
-			"Sine", hcGenerator, 1
-			,{ { "", Con_Float4 } }
-		,{ { "", Con_Float4 } }
-		,{ { "Frequency", Con_Float },{ "Angle", Con_Angle } }
-		}
-
-		,
-		{
-			"SmoothStep", hcFilter, 4
-			,{ { "", Con_Float4 } }
-		,{ { "", Con_Float4 } }
-		,{ { "Low", Con_Float },{ "High", Con_Float } }
-		}
-
-		,
-		{
-			"Pixelize", hcTransform, 0
-			,{ { "", Con_Float4 } }
-		,{ { "", Con_Float4 } }
-		,{ { "scale", Con_Float } }
-		}
-
-		,
-		{
-			"Blur", hcFilter, 4
-			,{ { "", Con_Float4 } }
-		,{ { "", Con_Float4 } }
-		,{ { "angle", Con_Float },{ "strength", Con_Float } }
-		}
-
-		,
-		{
-			"NormalMap", hcFilter, 4
-			,{ { "", Con_Float4 } }
-		,{ { "", Con_Float4 } }
-		,{ { "spread", Con_Float } }
-		}
-
-		,
-		{
-			"LambertMaterial", hcMaterial, 2
-			,{ { "Diffuse", Con_Float4 },{ "Equirect sky", Con_Float4 } }
-		,{ { "", Con_Float4 } }
-		,{ { "view", Con_Float2, 1.f,0.f,0.f,1.f } }
-		}
-
-		,
-		{
-			"MADD", hcBlend, 3
-			,{ { "", Con_Float4 } }
-		,{ { "", Con_Float4 } }
-		,{ { "Mul Color", Con_Color4 },{ "Add Color", Con_Color4 } }
-		}
-
-		,
-		{
-			"Hexagon", hcGenerator, 1
-			,{}
-		,{ { "", Con_Float4 } }
-		,{}
-		}
-
-		,
-		{
-			"Blend", hcBlend, 3
-			,{ { "", Con_Float4 },{ "", Con_Float4 } }
-		,{ { "", Con_Float4 } }
-		,{ { "A", Con_Float4 },{ "B", Con_Float4 },{ "Operation", Con_Enum, 0.f,0.f,0.f,0.f, false, false, "Add\0Multiply\0Darken\0Lighten\0Average\0Screen\0Color Burn\0Color Dodge\0Soft Light\0Subtract\0Difference\0Inverse Difference\0Exclusion\0" } }
-		}
-
-		,
-		{
-			"Invert", hcFilter, 4
-			,{ { "", Con_Float4 } }
-		,{ { "", Con_Float4 } }
-		,{}
-		}
-
-		,
-		{
-			"CircleSplatter", hcGenerator, 1
-			,{ { "", Con_Float4 } }
-		,{ { "", Con_Float4 } }
-		,{ { "Distance", Con_Float2 },{ "Radius", Con_Float2 },{ "Angle", Con_Angle2 },{ "Count", Con_Float } }
-		}
-
-		,
-		{
-			"Ramp", hcFilter, 4
-			,{ { "", Con_Float4 } }
-		,{ { "", Con_Float4 } }
-		,{ { "Ramp", Con_Ramp } }
-		}
-
-		,
-		{
-			"Tile", hcTransform, 0
-			,{ { "", Con_Float4 } }
-		,{ { "", Con_Float4 } }
-		,{ { "Scale", Con_Float },{ "Offset 0", Con_Float2 },{ "Offset 1", Con_Float2 },{ "Overlap", Con_Float2 } }
-		}
-
-		,
-		{
-			"Color", hcGenerator, -1
-			,{}
-		,{ { "", Con_Float4 } }
-		,{ { "Color", Con_Color4 } }
-		}
-
-
-		,
-		{
-			"NormalMapBlending", hcBlend, 3
-			,{ { "", Con_Float4 },{ "", Con_Float4 } }
-		,{ { "Out", Con_Float4 } }
-		,{ { "Technique", Con_Enum, 0.f,0.f,0.f,0.f, false, false, "RNM\0Partial Derivatives\0Whiteout\0UDN\0Unity\0Linear\0Overlay\0" } }
-		}
-
-		,
-		{
-			"iqnoise", hcNoise, 5
-			,{}
-		,{ { "", Con_Float4 } }
-		,{ { "Size", Con_Float },{ "U", Con_Float},{ "V", Con_Float} }
-		}
-
-		,
-		{
-			"PBR", hcMaterial, 2
-			,{ { "Diffuse", Con_Float4 },{ "Normal", Con_Float4 },{ "Roughness", Con_Float4 },{ "Displacement", Con_Float4 },{ "Equirect sky", Con_Float4 } }
-		,{ { "", Con_Float4 } }
-		,{ { "view", Con_Float2, 1.f,0.f,0.f,1.f, true } }
-		}
-
-		,
-
-		{
-			"PolarCoords", hcTransform, 0
-			,{ { "", Con_Float4 } }
-		,{ { "", Con_Float4 } }
-		,{ { "Type", Con_Enum, 0.f,0.f,0.f,0.f,false, false, "Linear to polar\0Polar to linear\0" } }
-		}
-
-		,
-		{
-			"Clamp", hcFilter, 4
-			,{ { "", Con_Float4 } }
-		,{ { "", Con_Float4 } }
-		,{ { "Min", Con_Float4 },{ "Max", Con_Float4 } }
-		}
-
-		,
-		{
-			"ImageRead", hcFilter, 6
-			,{}
-		,{ { "", Con_Float4 } }
-		,{ { "File name", Con_FilenameRead }
-		,{ "+X File name", Con_FilenameRead }
-		,{ "-X File name", Con_FilenameRead }
-		,{ "+Y File name", Con_FilenameRead }
-		,{ "-Y File name", Con_FilenameRead }
-		,{ "+Z File name", Con_FilenameRead }
-		,{ "-Z File name", Con_FilenameRead } }
-		}
-
-		,
-		{
-			"ImageWrite", hcFilter, 6
-			,{ { "", Con_Float4 } }
-		,{}
-		,{ { "File name", Con_FilenameWrite },{ "Format", Con_Enum, 0.f,0.f,0.f,0.f, false, false, "JPEG\0PNG\0TGA\0BMP\0HDR\0DDS\0KTX\0" }
-		,{ "Quality", Con_Enum, 0.f,0.f,0.f,0.f, false, false, " 0 .. Best\0 1\0 2\0 3\0 4\0 5 .. Medium\0 6\0 7\0 8\0 9 .. Lowest\0" }
-		,{ "Width", Con_Enum, 0.f,0.f,0.f,0.f, false, false, "  256\0  512\0 1024\0 2048\0 4096\0" }
-		,{ "Height", Con_Enum, 0.f,0.f,0.f,0.f, false, false, "  256\0  512\0 1024\0 2048\0 4096\0" }
-		,{ "Export", Con_ForceEvaluate } }
-		}
-
-		,
-		{
-			"Thumbnail", hcFilter, 6
-			,{ { "", Con_Float4 } }
-		,{}
-		,{ { "Make", Con_ForceEvaluate } }
-		}
-
-		,
-		{
-			"Paint2D", hcPaint, 7
-			,{ { "Brush", Con_Float4 } }
-		,{ { "", Con_Float4 } }
-		,{ { "Size", Con_Enum, 0.f,0.f,0.f,0.f, false, false, "  256\0  512\0 1024\0 2048\0 4096\0" } }
-		, true
-		, true
-		}
-		,
-		{
-			"Swirl", hcTransform, 0
-			,{ { "", Con_Float4 } }
-		,{ { "", Con_Float4 } }
-		,{ { "Angles", Con_Angle2 } }
-		}
-		,
-		{
-			"Crop", hcTransform, 0
-			,{ { "", Con_Float4 } }
-		,{ { "", Con_Float4 } }
-		,{ { "Quad", Con_Float4, 0.f,1.f,0.f,1.f, false, true } }
-		, true
-		}
-
-		,
-		{
-			"CubemapFilter", hcFilter, 8
-			,{ { "", Con_Float4 } }
-		,{ { "", Con_Float4 } }
-		,{ { "Lighting Model", Con_Enum, 0.f,0.f,0.f,0.f, false, false, "Phong\0Phong BRDF\0Blinn\0Blinn BRDF\0" }
-		,{ "Exclude Base", Con_Bool }
-		,{ "Gloss scale", Con_Int }
-		,{ "Gloss bias", Con_Int }
-		,{ "Face size", Con_Enum, 0.f,0.f,0.f,0.f, false, false, "   32\0   64\0  128\0  256\0  512\0 1024\0" }
-		}
-		}
-
-		,
-		{
-			"PhysicalSky", hcGenerator, 8
-			,{}
-		,{ { "", Con_Float4 } }
-		,{ { "ambient", Con_Float4 }
-		,{ "lightdir", Con_Float4 }
-		,{ "Kr", Con_Float4 }
-		,{ "rayleigh brightness", Con_Float }
-		,{ "mie brightness", Con_Float }
-		,{ "spot brightness", Con_Float }
-		,{ "scatter strength", Con_Float }
-		,{ "rayleigh strength", Con_Float }
-		,{ "mie strength" , Con_Float }
-		,{ "rayleigh collection power", Con_Float }
-		,{ "mie collection power", Con_Float }
-		,{ "mie distribution", Con_Float }
-		,{ "Size", Con_Enum, 0.f,0.f,0.f,0.f, false, false, "  256\0  512\0 1024\0 2048\0 4096\0" }
-			}
-		}
-
-
-		,
-		{
-			"CubemapView", hcGenerator, 8
-			,{ { "", Con_Float4 } }
-		,{ { "", Con_Float4 } }
-		,{ { "view", Con_Float2, 1.f,0.f,0.f,1.f, true },{ "Mode", Con_Enum, 0.f,0.f,0.f,0.f, false, false, "Projection\0Isometric\0Cross\0Camera\0" } }
-		}
-
-			,
-			{
-				"EquirectConverter", hcGenerator, 8
-				,{ { "", Con_Float4 } }
-			,{ { "", Con_Float4 } }
-			,{ { "Mode", Con_Enum, 0.f,0.f,0.f,0.f, false, false, "Equirect To Cubemap\0Cubemap To Equirect\0" },
-				{ "Size", Con_Enum, 0.f,0.f,0.f,0.f, false, false, "  256\0  512\0 1024\0 2048\0 4096\0" } }
-			}
-
-	};
-
-
-	for (size_t i = 0; i < gMetaNodes.size(); i++)
-	{
-		gMetaNodesIndices[gMetaNodes[i].mName] = i;
-	}
 }
