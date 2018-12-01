@@ -293,17 +293,15 @@ void RenderPreviewNode(int selNode, TileNodeEditGraphDelegate& nodeGraphDelegate
 			ImGui::InvisibleButton("ImTheInvisibleMan", ImVec2(w, h));
 		else
 			ImGui::ImageButton((ImTextureID)(int64_t)((selNode != -1) ? evaluation.GetEvaluationTexture(selNode) : 0), ImVec2(w, h), ImVec2(0, 1), ImVec2(1, 0));
+		
 		rc = ImRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax());
-
 		ImDrawList* draw_list = ImGui::GetWindowDrawList();
+
 		if (selNode != -1 && nodeGraphDelegate.NodeIsCubemap(selNode))
-		{
 			draw_list->AddCallback((ImDrawCallback)(Evaluation::NodeUICallBack), (void*)(AddNodeUICallbackRect(CBUI_Cubemap, rc, selNode)));
-		}
 		else if (selNode != -1 && nodeGraphDelegate.NodeHasUI(selNode))
-		{
 			draw_list->AddCallback((ImDrawCallback)(Evaluation::NodeUICallBack), (void*)(AddNodeUICallbackRect(CBUI_Node, rc, selNode)));
-		}
+		
 	}
 	ImGui::PopStyleColor(3);
 	ImGui::PopStyleVar(1);
@@ -315,9 +313,8 @@ void RenderPreviewNode(int selNode, TileNodeEditGraphDelegate& nodeGraphDelegate
 		nodeGraphDelegate.SetMouse(ratio.x, ratio.y, deltaRatio.x, deltaRatio.y, io.MouseDown[0], io.MouseDown[1]);
 	}
 	else
-	{
 		nodeGraphDelegate.SetMouse(-9999.f, -9999.f, -9999.f, -9999.f, false, false);
-	}
+	
 }
 
 void NodeEdit(TileNodeEditGraphDelegate& nodeGraphDelegate, Evaluation& evaluation)
@@ -326,9 +323,7 @@ void NodeEdit(TileNodeEditGraphDelegate& nodeGraphDelegate, Evaluation& evaluati
 
 	int selNode = nodeGraphDelegate.mSelectedNodeIndex;
 	if (ImGui::CollapsingHeader("Preview", 0, ImGuiTreeNodeFlags_DefaultOpen))
-	{
-		RenderPreviewNode(selNode, nodeGraphDelegate, evaluation);
-	}
+		RenderPreviewNode(selNode, nodeGraphDelegate, evaluation);}
 
 	if (selNode == -1)
 		ImGui::CollapsingHeader("No Selection", 0, ImGuiTreeNodeFlags_DefaultOpen);
@@ -363,9 +358,7 @@ std::string GetGroup(const std::string &name)
 	for (int i = int(name.length()) - 1; i >= 0; i--)
 	{
 		if (name[i] == '/')
-		{
 			return name.substr(0, i);
-		}
 	}
 	return "";
 }
@@ -375,9 +368,7 @@ std::string GetName(const std::string &name)
 	for (int i = int(name.length()) - 1; i >= 0; i--)
 	{
 		if (name[i] == '/')
-		{
 			return name.substr(i+1);
-		}
 	}
 	return name;
 }
@@ -551,9 +542,7 @@ template <typename T, typename Ty> bool TVRes(std::vector<T, Ty>& res, const cha
 		if (viewMode == 2 || viewMode == 3)
 		{
 			if (currentStep > FLT_EPSILON)
-			{
 				ImGui::SameLine();
-			}
 		}
 
 		ImGui::BeginGroup();
@@ -625,9 +614,7 @@ void ValidateMaterial(Library& library, TileNodeEditGraphDelegate &nodeGraphDele
 		{
 			Image image;
 			if (Evaluation::GetEvaluationImage(int(i), &image) == EVAL_OK)
-			{
 				g_TS.AddTaskSetToPipe(new EncodeImageTaskSet(image, std::make_pair(materialIndex, material.mRuntimeUniqueId), std::make_pair(i, dstNode.mRuntimeUniqueId)));
-			}
 		}
 
 		dstNode.mType = uint32_t(srcNode.mType);
@@ -714,9 +701,8 @@ void LibraryEdit(Library& library, TileNodeEditGraphDelegate &nodeGraphDelegate,
 		back.mRuntimeUniqueId = GetRuntimeId();
 		
 		if (previousSelection != -1)
-		{
 			ValidateMaterial(library, nodeGraphDelegate, previousSelection);
-		}
+
 		selectedMaterial = int(library.mMaterials.size()) - 1;
 		nodeGraphDelegate.Clear();
 		evaluation.Clear();
@@ -763,9 +749,8 @@ void LibraryEdit(Library& library, TileNodeEditGraphDelegate &nodeGraphDelegate,
 		nodeGraphDelegate.mSelectedNodeIndex = -1;
 		// save previous
 		if (previousSelection != -1)
-		{
 			ValidateMaterial(library, nodeGraphDelegate, previousSelection);
-		}
+
 		UpdateNewlySelectedGraph(nodeGraphDelegate, evaluation);
 	}
 	ImGui::EndChild();
@@ -798,10 +783,10 @@ void Imogen::Show(Library& library, TileNodeEditGraphDelegate &nodeGraphDelegate
 				static int previewSize = 0;
 				//ImGui::Combo("Preview size", &previewSize, "  128\0  256\0  512\0 1024\0 2048\0 4096\0");
 				//ImGui::SameLine();
+				
 				if (ImGui::Button("Do exports"))				//외부 저장 버튼 클릭
-				{
 					nodeGraphDelegate.DoForce();				
-				}
+				
 				ImGui::SameLine();
 				if (ImGui::Button("Save Graph"))				//그래프 저장 버튼 클릭
 				{
@@ -832,28 +817,24 @@ void Imogen::Show(Library& library, TileNodeEditGraphDelegate &nodeGraphDelegate
 		ImGui::End();									
 
 		if (ImGui::Begin("Shaders"))							//"Shaders" Start
-		{
 			HandleEditor(editor, nodeGraphDelegate, evaluation);
-		}
+
 		ImGui::End();
 
 		if (ImGui::Begin("Library"))							//"Library" Start
-		{
 			LibraryEdit(library, nodeGraphDelegate, evaluation);
-		}
+		
 		ImGui::End();
 
 		ImGui::SetWindowSize(ImVec2(300, 300));
 		if (ImGui::Begin("Parameters"))							//"Parameters" Start
-		{
 			NodeEdit(nodeGraphDelegate, evaluation);
-		}
+		
 		ImGui::End();
 
 		if (ImGui::Begin("Logs"))							//"Logs" Start
-		{
 			ImguiAppLog::Log->DrawEmbedded();
-		}
+		
 		ImGui::End();
 
 		// view extraction
@@ -870,15 +851,14 @@ void Imogen::Show(Library& library, TileNodeEditGraphDelegate &nodeGraphDelegate
 				ImGui::SetNextWindowSize(ImVec2(256, 256));
 			}
 			ImGui::SetNextWindowFocus();
+			
 			if (ImGui::Begin(tmps, &open))
-			{
 				RenderPreviewNode(int(extraction.mNodeIndex), nodeGraphDelegate, evaluation, true);
-			}
+			
 			ImGui::End();
 			if (!open)
-			{
 				removeExtractedView = index;
-			}
+			
 			index++;
 		}
 		if (removeExtractedView != -1)
@@ -905,13 +885,10 @@ void Imogen::DiscoverNodes(const char *extension, const char *directory, EVALUAT
 		tinydir_readfile(&dir, &file);
 
 		if (!file.is_dir && !strcmp(file.extension, extension))
-		{
 			files.push_back({ directory, file.name, evaluatorType });
-		}
 
 		tinydir_next(&dir);
 	}
-
 	tinydir_close(&dir);
 }
 
