@@ -305,7 +305,7 @@ void Evaluation::DelEvaluationInput(size_t target, int slot)
 
 void Evaluation::SetEvaluationOrder(const std::vector<size_t> nodeOrderList)
 {
-	mEvaluationOrderList = nodeOrderList;
+	mEvaluationOrderList = nodeOrderList; //받은 nodeOrderList 를 사용할 mEvaluationOrderList 로 세팅해준다
 }
 
 void Evaluation::SetTargetDirty(size_t target, bool onlyChild)
