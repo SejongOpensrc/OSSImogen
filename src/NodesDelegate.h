@@ -31,21 +31,24 @@
 #include "Library.h"
 #include "nfd.h"
 
+// 타일 노드 에디터 대표 ( DB나 xml사용 대신 그 노드에 대한 형식을 이렇게 열거형으로 표시해둠 )
 struct TileNodeEditGraphDelegate : public NodeGraphDelegate
 {
 	TileNodeEditGraphDelegate(Evaluation& evaluation) : mEvaluation(evaluation), mbMouseDragging(false)
 	{
 		mCategoriesCount = 9;
 		static const char *categories[] = {
-			"Transform",
-			"Generator",
-			"Material",
-			"Blend",
-			"Filter",
-			"Noise",
-			"File",
-			"Paint",
-			"Cubemap"};
+			"Transform", // 변형
+			"Generator", // 제네레이터
+			"Material", // 메테리얼
+			"Blend", // 블랜드 (믹싱)
+			"Filter", // 필터 씌우기, 필터링
+			"Noise", // 소음, 노이지
+			"File", // 파일
+			"Paint", // Draw, 페인트
+			"Cubemap",
+			"AddedOne" // hw, test value로 하나 추가해봄
+		}; 
 		mCategories = categories;
 		assert(!mInstance);
 		mInstance = this;
