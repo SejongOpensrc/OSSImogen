@@ -291,9 +291,9 @@ void Evaluation::SetEvaluationSampler(size_t target, const std::vector<InputSamp
 
 void Evaluation::AddEvaluationInput(size_t target, int slot, int source)
 {
-	mEvaluationStages[target].mInput.mInputs[slot] = source;
-	mEvaluationStages[source].mUseCountByOthers++;
-	SetTargetDirty(target);
+	mEvaluationStages[target].mInput.mInputs[slot] = source;  //
+	mEvaluationStages[source].mUseCountByOthers++;            // mEvaluationStages 의 target, slot, source 를 받아서 값을 세팅해주고 
+	SetTargetDirty(target);                                   // mUseCountByOthers을 카운트를 +1 해주고SetTargetDirty 을 세팅해준다
 }
 
 void Evaluation::DelEvaluationInput(size_t target, int slot)
