@@ -1,7 +1,9 @@
 # Imogen
 
-<h3>- 2조 협업 OSS, Imogen - team repository! </h3>
-<h3>- <a src='https://github.com/SejongOpensrc/OSSImogen/projects/1'> 프로젝트 진행 사항 살펴보기 </a></h3>
+<h3>- 2조 협업 OSS, Imogen - team repository! </h3> <h2><a href="https://github.com/SejongOpensrc">팀룸으로 돌아가기</a></h2>
+<h3>- <a href='https://github.com/SejongOpensrc/OSSImogen/projects/1'> 프로젝트 진행 사항 살펴보기 </a></h3>
+
+-----------
 
 GPU/CPU Texture Generator
 
