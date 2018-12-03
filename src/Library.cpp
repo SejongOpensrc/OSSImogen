@@ -28,7 +28,7 @@
 
 #include "Library.h"
 
-  
+
 // 중요 참고 사항 : Ser - 데이터를 파일에 쓰거나 읽는 작업 수행
 
 
@@ -40,15 +40,15 @@ enum : uint32_t  // 열거형 정의
 };
 #define ADD(_fieldAdded, _fieldName) if (dataVersion >= _fieldAdded){ Ser(_fieldName); }         // 정상적인 버전인 경우, 해당 field에 대해 Ser작업 수행 
 #define ADD_LOCAL(_localAdded, _type, _localName, _defaultValue) \                                   
-	_type _localName = (_defaultValue); \                                                        // localName을 초기화하고
-	if (dataVersion >= (_localAdded)) { Ser(_localName)); }                                      // 정상적인 버전인 경우, 해당 local에 대해 Ser작업 수행
+_type _localName = (_defaultValue); \                                                        // localName을 초기화하고
+if (dataVersion >= (_localAdded)) { Ser(_localName)); }                                      // 정상적인 버전인 경우, 해당 local에 대해 Ser작업 수행
 #define REM(_fieldAdded, _fieldRemoved, _type, _fieldName, _defaultValue) \
 	_type _fieldName = (_defaultValue); \                                                        // localName을 초기화하고
-	if (dataVersion >= (_fieldAdded) && dataVersion < (_fieldRemoved)) { Ser(_fieldName); }      // 정상적인 버전인 경우, 해당 field에 대해 Ser작업 수행
+if (dataVersion >= (_fieldAdded) && dataVersion < (_fieldRemoved)) { Ser(_fieldName); }      // 정상적인 버전인 경우, 해당 field에 대해 Ser작업 수행
 #define VERSION_IN_RANGE(_from, _to) \                                                           // 버전이 from과 to 사이에 있는지에 대하여 반환 
-	(dataVersion >= (_from) && dataVersion < (_to))
+(dataVersion >= (_from) && dataVersion < (_to))
 
-template<bool doWrite> struct Serialize   // 클래스처럼 구현된 구조체 (C++ 방식)
+	template<bool doWrite> struct Serialize   // 클래스처럼 구현된 구조체 (C++ 방식)
 {
 	Serialize(const char *szFilename)  // 생성자
 	{
@@ -102,7 +102,7 @@ template<bool doWrite> struct Serialize   // 클래스처럼 구현된 구조체
 		}
 		else
 		{
-			data.resize(count);                     
+			data.resize(count);
 			fread(&data[0], count, 1, fp);          // 길이만큼 fp에서 data로 읽어들임
 		}
 	}
@@ -141,7 +141,7 @@ template<bool doWrite> struct Serialize   // 클래스처럼 구현된 구조체
 		if (!fp)  // 파일포인터가 없는 경우 종료
 			return false;
 		if (doWrite)
-			dataVersion = v_lastVersion-1;  // 쓰기모드인 경우 마지막 버전의 바로 이전버전을 데이터 버전으로 설정
+			dataVersion = v_lastVersion - 1;  // 쓰기모드인 경우 마지막 버전의 바로 이전버전을 데이터 버전으로 설정
 		Ser(dataVersion);                   // 데이터 버전에 대해 Ser 작업 수행
 		if (dataVersion > v_lastVersion)    // 올바르지 않은 버전인 경우 종료
 			return false; // no forward compatibility

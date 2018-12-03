@@ -1,6 +1,10 @@
 # Imogen
 
-- 2조 협업 OSS, Imogen - team repository!
+<h3>- 2조 협업 OSS, Imogen - team repository! </h3> 
+<h4><a href="https://github.com/SejongOpensrc">팀룸으로 돌아가기</a></h4>
+<h3>- <a href='https://github.com/SejongOpensrc/OSSImogen/projects/1'> 프로젝트 진행 사항 살펴보기 </a></h3>
+
+-----------
 
 :GPU/CPU Texture Generator
 
@@ -94,6 +98,6 @@ https://github.com/ocornut/imgui/issues/1902#issuecomment-429445321
 
 
 -------------
+How to use Imogen(이모젠의 사용) : https://www.youtube.com/watch?v=84QgFdZb7eM
 
-How to use Imogen.. : https://www.youtube.com/watch?v=84QgFdZb7eM
 ![Image of Imogen 0.4](https://i.imgur.com/vpNaA8h.png)
