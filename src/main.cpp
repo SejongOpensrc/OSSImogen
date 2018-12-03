@@ -49,6 +49,7 @@
 // 제한 사항 : -
 // 오류 처리 : -
 // 이력 사항 : main.cpp의 줄단위 주석 및 머리주석 추가 (김준한, 2018-10-31) 
+// 콜라보레이터 : 정현우, 송준환
 
 
 TileNodeEditGraphDelegate *TileNodeEditGraphDelegate::mInstance = NULL;
