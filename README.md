@@ -2,7 +2,7 @@
 
 - 2조 협업 OSS, Imogen - team repository!
 
-GPU/CPU Texture Generator
+:GPU/CPU Texture Generator
 
 WIP of a GPU Texture generator using dear imgui for UI. Not production ready and a bit messy but really fun to code.
 Basically, add GPU and CPU nodes in a graph to manipulate and generate images. Nodes are hardcoded now but a discovery system is planned.
@@ -93,7 +93,7 @@ dear imgui color scheme - codz01
 https://github.com/ocornut/imgui/issues/1902#issuecomment-429445321
 
 
------------
+-------------
 
 How to use Imogen : https://www.youtube.com/watch?v=84QgFdZb7eM
 ![Image of Imogen 0.4](https://i.imgur.com/vpNaA8h.png)
